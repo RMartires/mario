@@ -6,6 +6,9 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.mygdx.game.mariogame;
+import com.mygdx.game.sprites.enemy;
+import com.mygdx.game.sprites.gumba;
 import com.mygdx.game.sprites.interactivetileobj;
 
 import java.awt.event.ContainerListener;
@@ -21,6 +24,7 @@ public class WorldContactListener implements ContactListener {
         Fixture fixa=contact.getFixtureA();
         Fixture fixb=contact.getFixtureB();
 
+        int cdef = fixa.getFilterData().categoryBits|fixb.getFilterData().categoryBits;
 
         if(fixa.getUserData()=="head" || fixb.getUserData()=="head"){
             Fixture head = fixa.getUserData()=="head" ? fixa:fixb;
@@ -30,6 +34,16 @@ public class WorldContactListener implements ContactListener {
                 ((interactivetileobj)object.getUserData()).onHeadhit();
             }
         }
+
+        switch (cdef){
+            case mariogame.enemy_head|mariogame.mario_bit:
+                if(fixa.getFilterData().categoryBits == mariogame.enemy_head)
+                    ((enemy)fixa.getUserData()).hitonhead();
+                else if(fixa.getFilterData().categoryBits == mariogame.enemy_head)
+                    ((enemy)fixa.getUserData()).hitonhead();
+
+        }
+
     }
 
     @Override

@@ -22,10 +22,11 @@ public class Hud implements Disposable{
 
     private int timer;
     private float timecount;
-    private int score;
+    private static  int score;
+    private int worldtimer;
 
     Label countdownlabel;
-    Label scorelabel;
+   static Label scorelabel;
     Label timelabel;
     Label worldlabel;
     Label mariolabel;
@@ -66,9 +67,25 @@ public class Hud implements Disposable{
 
     }
 
+    public void update(float dt){
+        timecount+=dt;
+        if(timecount>=1){
+            worldtimer--;
+            countdownlabel.setText(String.format("%03d",worldtimer));
+            timecount=0;
+        }
+    }
+
+    public static void addScore(int val){
+        score+=val;
+        scorelabel.setText(String.format("%03d",score));
+    }
+
 
     @Override
     public void dispose() {
         stage.dispose();
     }
+
+
 }

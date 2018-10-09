@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.game.mariogame;
 import com.mygdx.game.screens.playscreen;
 
 /**
@@ -28,9 +29,9 @@ public class mario extends Sprite {
     private float statetimer;
     private boolean runningright;
 
-    public mario(World world,playscreen screen){
+    public mario(playscreen screen ){
         super(screen.getAtlas().findRegion("little_mario"));
-        this.world=world;
+        this.world=screen.getWorld();
         current=State.standing;
         previous=State.standing;
         statetimer=0;
@@ -114,6 +115,8 @@ public class mario extends Sprite {
         FixtureDef fdef = new FixtureDef();
         CircleShape shape= new CircleShape();
         shape.setRadius(6/PPM);
+        fdef.filter.categoryBits= mariogame.mario_bit;
+        fdef.filter.maskBits=mariogame.ground_bit |mariogame.coin_bit|mariogame.brick_bit|mariogame.enemy_bit|mariogame.object_bit|mariogame.enemy_head;
 
         fdef.shape=shape;
         b2body.createFixture(fdef);

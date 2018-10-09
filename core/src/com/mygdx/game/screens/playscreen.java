@@ -4,6 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,6 +31,7 @@ import com.mygdx.game.scenes.Hud;
 import com.mygdx.game.sprites.mario;
 import com.mygdx.game.tools.B2worldcreator;
 import com.mygdx.game.tools.WorldContactListener;
+import com.mygdx.game.sprites.gumba;
 
 /**
  * Created by ROHIT on 9/14/2018.
@@ -56,7 +59,15 @@ public class playscreen implements Screen {
     mario player;
     private TextureAtlas atlas;
 
-    public playscreen(mariogame game){
+    //music-acesst
+    private AssetManager manager;
+    private Music music;
+
+    //enemy
+    private gumba gumba;
+
+
+    public playscreen(mariogame game, AssetManager manager){
 
         atlas = new TextureAtlas("Mario_and_Enemies.pack");
 
@@ -79,15 +90,24 @@ public class playscreen implements Screen {
 
 
         //mario player
-        player= new mario(world,this);
+        player= new mario(this);
+
+        //enemy
+        gumba=new gumba(this,0.50f,0.32f);
 
 
-        new B2worldcreator(world,map);
+        new B2worldcreator(this,manager);
 
 
         //contactlistener
         world.setContactListener(new WorldContactListener());
 
+
+        //assetmanager
+        this.manager=manager;
+        music=manager.get("audio/music/mario_music.mp3",Music.class);
+        music.setLooping(true);
+        music.play();
 
     }
 
@@ -107,6 +127,8 @@ public class playscreen implements Screen {
         renderer.setView(cam);
 
         player.update(dt);
+        gumba.update(dt);
+        hud.update(dt);
 
     }
 
@@ -142,6 +164,7 @@ public class playscreen implements Screen {
         game.batch.setProjectionMatrix(cam.combined);
         game.batch.begin();
         player.draw(game.batch);
+        gumba.draw(game.batch);
         game.batch.end();
 
         hud.stage.draw();
@@ -154,6 +177,15 @@ public class playscreen implements Screen {
         gameport.update(width,height);
 
     }
+
+    public TiledMap getMap(){
+        return map;
+    }
+
+    public World getWorld(){
+        return world;
+    }
+
 
     @Override
     public void pause() {
